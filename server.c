@@ -19,5 +19,8 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
+    bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_adress));
+    listen(server_socket, 5);
+
     return 0;
 }
