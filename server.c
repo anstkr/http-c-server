@@ -1,0 +1,23 @@
+#include <stdio.h> //common C utils
+#include <stdlib.h> //other common C utils
+#include <sys/types.h> // common types
+#include <sys/socket.h> // socket utils
+#include <unistd.h> // unix api
+#include <netinet/in.h> // protocol utils
+
+int main(){
+    struct sockaddr_in server_adress;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(6969);
+    server_address.sin_addr.s_addr = INADDR_ANY;
+
+    int server_socket;
+    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+    if(server_socket < 0) {
+        printf("Creating the socket failed (%d)\n\n", server_socket);
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}
