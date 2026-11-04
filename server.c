@@ -32,7 +32,7 @@ int main(){
 
 void handle_connection(const int *server_socket) {
     int client_socket = accept(*server_socket, NULL, NULL);
-    char server_message[256] = "Connected to server!";
+    char server_message[256] = "Connected to server";
     send(client_socket, server_message, sizeof(server_message), 0);
     close(client_socket);
     return; 
