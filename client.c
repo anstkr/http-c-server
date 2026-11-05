@@ -17,8 +17,7 @@ int main(){
     network_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if(network_socket < 0) {
-        printf("Creating the socket failed (%d)\n\n", network_socket);
-        exit(EXIT_FAILURE);
+        perror("Creating the socket failed");
     }
 
     handle_response(&network_socket, &server_address);
@@ -32,7 +31,6 @@ void handle_response(const int *network_socket, const struct sockaddr_in *server
 
     if (connection_status < 0) {
         perror("connection_status");
-        exit(EXIT_FAILURE);
     }
 
     char server_response[256];
@@ -40,7 +38,6 @@ void handle_response(const int *network_socket, const struct sockaddr_in *server
 
     if (response < 0) {
         perror("response");
-        exit(EXIT_FAILURE);
     }
 
     printf("response: %s\n", server_response);
