@@ -24,16 +24,28 @@ int main(){
     bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address));
     listen(server_socket, 5);
     
-    handle_connection(&server_socket);
-    close(server_socket);
+    for(;;){
+        handle_connection(&server_socket);
+    }
 
+    close(server_socket);
     return 0;
 }
 
 void handle_connection(const int *server_socket) {
     int client_socket = accept(*server_socket, NULL, NULL);
-    char server_message[256] = "Connected to server";
-    send(client_socket, server_message, sizeof(server_message), 0);
+
+    char http_request[256];
+    ssize_t request = recv(client_socket, http_request, sizeof(http_request), 0);
+    printf("HTTP request: %s\n", http_request);
+
+    if (request < 0) {
+        perror("request");
+    }
+
+    char http_response[] = "HTTP/1.1 200 OK";
+    send(client_socket, http_response, sizeof(http_response), 0);
+
     close(client_socket);
     return; 
 }
