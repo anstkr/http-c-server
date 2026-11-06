@@ -28,10 +28,13 @@ int main(){
 
 void handle_response(const int *network_socket, const struct sockaddr_in *server_address) {
     int connection_status = connect(*network_socket, (const struct sockaddr*) server_address, sizeof(*server_address));
-
+    
     if (connection_status < 0) {
         perror("connection_status");
     }
+
+    char http_request[] = "GET / HTTP/1.1";
+    send(*network_socket, http_request, sizeof(http_request), 0);
 
     char server_response[256];
     ssize_t response = recv(*network_socket, server_response, sizeof(server_response), 0);
