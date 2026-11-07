@@ -4,6 +4,7 @@
 #include <sys/socket.h> // socket utils
 #include <unistd.h> // unix api
 #include <netinet/in.h> // protocol utils
+#include <string.h>
 
 void handle_response(const int *network_socket, const struct sockaddr_in *server_address);
 
@@ -33,7 +34,7 @@ void handle_response(const int *network_socket, const struct sockaddr_in *server
         perror("connection_status");
     }
 
-    char http_request[] = "GET / HTTP/1.1";
+    char http_request[] = "GET / HTTP/1.1\nHost: 127.0.0.1\nUser-Agent: http-c-client/0.1";
     send(*network_socket, http_request, sizeof(http_request), 0);
 
     char server_response[256];
