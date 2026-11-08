@@ -8,7 +8,7 @@
 
 void handle_connection(const int *server_socket);
 void create_http_response(char *response, const char *request);
-int get_requested_page_html(char *html, const char *request);
+char *get_requested_page_html(const char *request);
 void get_page_from_request(char *page, const char *request);
 void get_method();
 char *get_file_context(char *filename);
@@ -72,18 +72,17 @@ void create_http_response(char *response, const char *request) {
     // TODO: handle method
     // char method[] = get_method();
 
-    char html[1024] = "";
-    get_requested_page_html(html, request);
+    char *html = get_requested_page_html(request);
     strcat(response, html);
 }
 
-int get_requested_page_html(char *html, const char *request) {
+char *get_requested_page_html(const char *request) {
+    // TODO: actually receiving and parsing the page
     char page[256] = "";
     get_page_from_request(page, request);
 
-    char *data = get_file_context("html/index.html");
-    strcat(html,data);
-    return 1;
+    char *html = get_file_context("html/index.html");
+    return html;
 }
 
 char *get_file_context(char *filename) {
