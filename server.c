@@ -7,10 +7,9 @@
 #include <string.h>
 
 void handle_connection(const int *server_socket);
-void create_http_response(char *response, const char *request);
-int get_requested_page_html(char *html, const char *request);
-void get_page_from_request(char *page, const char *request);
-void get_method();
+char *create_http_response(const char *request);
+char *get_requested_page(const char *request);
+char *get_page_from_request(const char *request);
 char *get_file_context(char *filename);
 
 int main(){
@@ -52,38 +51,53 @@ void handle_connection(const int *server_socket) {
         perror("request");
     }
 
-    char http_response[1024] = "";
-    create_http_response(http_response, http_request);
+    char *http_response = create_http_response(http_request);
     send(client_socket, http_response, sizeof(http_response), 0);
 
+    free(http_response);
     close(client_socket);
-    return; 
 }
 
-void create_http_response(char *response, const char *request) {
-    char response_data[] = "HTTP/1.1 200 OK\r\n"
+char *create_http_response(const char *request) {
+    char *headers = "HTTP/1.1 200 OK\r\n"
     "Date: Mon, 27 Jul 2009 12:28:53 GMT\r\n"
     "Server: http-c-server\r\n"
     "Content-Type: text/html\r\n"
     "\r\n";
+    char *html = get_requested_page(request);
 
-    strcat(response, response_data);
+    size_t response_size = strlen(html) + strlen(headers) + 1;
+    char *response_data = malloc(response_size);
 
-    // TODO: handle method
-    // char method[] = get_method();
+    strcpy(response_data, headers);
+    strcat(response_data, html);
 
-    char html[1024] = "";
-    get_requested_page_html(html, request);
-    strcat(response, html);
+    free(html);
+    return response_data;
 }
 
-int get_requested_page_html(char *html, const char *request) {
-    char page[256] = "";
-    get_page_from_request(page, request);
+char *get_requested_page(const char *request) {
+    char *page = get_page_from_request(request);
+    char *context;
 
-    char *data = get_file_context("html/index.html");
-    strcat(html,data);
-    return 1;
+    if (strcmp(page, "/") == 0) {
+        context = get_file_context("html/index.html");
+    } else {
+        context = get_file_context(page);
+    }
+
+    return get_file_context(context);
+}
+
+char *get_page_from_request(const char *request) {
+    // TODO: fix malloc allocation and add free after
+    char *inputCopy = malloc(strlen(request)+1);
+    const char separator[] = " ";
+
+    strcpy(inputCopy, request);
+    char *method = strtok(inputCopy, separator);
+    char *path = strtok(NULL, separator);
+    return path;
 }
 
 char *get_file_context(char *filename) {
@@ -108,11 +122,4 @@ char *get_file_context(char *filename) {
     data[i] = '\0';
     fclose(file);
     return data;
-}
-
-void get_page_from_request(char *page, const char *request) {
-    strcat(page,"/");
-}
-
-void get_method() {
 }
