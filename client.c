@@ -35,6 +35,7 @@ void handle_response(const int *network_socket, const struct sockaddr_in *server
     }
 
     char http_request[] = "GET / HTTP/1.1\nHost: 127.0.0.1\nUser-Agent: http-c-client/0.1";
+    // char http_request[] = "GET html/assets/css/main.css HTTP/1.1\nHost: 127.0.0.1\nUser-Agent: http-c-client/0.1";
     send(*network_socket, http_request, sizeof(http_request), 0);
 
     char server_response[256];
